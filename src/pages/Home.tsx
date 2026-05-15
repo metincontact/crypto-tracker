@@ -9,7 +9,7 @@ function Home() {
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const { favorites, isFavorite } = useFavorites();
+  const { favorites } = useFavorites();
 
   useEffect(() => {
     const API_KEY = import.meta.env.VITE_COINGECKO_API_KEY;
