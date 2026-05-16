@@ -11,6 +11,7 @@ import {
 } from "recharts";
 import type { CoinDetail, ChartData } from "../types";
 import { useFavorites } from "../useFavorites";
+import { usePortfolio } from "../usePortfolio";
 
 function CoinDetailPage() {
   const { id } = useParams();
@@ -22,7 +23,13 @@ function CoinDetailPage() {
   );
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [days, setDays] = useState(7);
+  const [chartLoading, setChartLoading] = useState(false);
+  const [amount, setAmount] = useState("");
+  const [showPortfolioInput, setShowPortfolioInput] = useState(false);
+
   const { toggleFavorite, isFavorite } = useFavorites();
+  const { addToPortfolio } = usePortfolio();
 
   useEffect(() => {
     const API_KEY = import.meta.env.VITE_COINGECKO_API_KEY;
@@ -33,7 +40,7 @@ function CoinDetailPage() {
             `https://api.coingecko.com/api/v3/coins/${id}?x_cg_demo_api_key=${API_KEY}`,
           ),
           fetch(
-            `https://api.coingecko.com/api/v3/coins/${id}/market_chart?vs_currency=usd&days=7&x_cg_demo_api_key=${API_KEY}`,
+            `https://api.coingecko.com/api/v3/coins/${id}/market_chart?vs_currency=usd&days=${days}&x_cg_demo_api_key=${API_KEY}`,
           ),
         ]);
 
@@ -53,11 +60,12 @@ function CoinDetailPage() {
         setError("Failed to load coin data.");
       } finally {
         setLoading(false);
+        setChartLoading(false);
       }
     };
 
     fetchData();
-  }, [id]);
+  }, [id, days]);
 
   if (loading)
     return (
@@ -140,35 +148,62 @@ function CoinDetailPage() {
 
       {/* Chart */}
       <div className="bg-slate-800 border border-slate-700 rounded-xl p-6 mb-8">
-        <h2 className="text-white font-semibold mb-4">7-Day Price Chart</h2>
-        <ResponsiveContainer width="100%" height={250}>
-          <LineChart data={chartData}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
-            <XAxis dataKey="date" tick={{ fill: "#94a3b8", fontSize: 11 }} />
-            <YAxis tick={{ fill: "#94a3b8", fontSize: 11 }} />
-            <Tooltip
-              contentStyle={{
-                backgroundColor: "#1e293b",
-                border: "none",
-                borderRadius: "8px",
-              }}
-              labelStyle={{ color: "#94a3b8" }}
-              itemStyle={{ color: "#60a5fa" }}
-            />
-            <Line
-              type="monotone"
-              dataKey="price"
-              stroke="#60a5fa"
-              strokeWidth={2}
-              dot={false}
-            />
-          </LineChart>
-        </ResponsiveContainer>
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-white font-semibold">Price Chart</h2>
+          <div className="flex gap-2">
+            {[1, 7, 30].map((d) => (
+              <button
+                key={d}
+                onClick={() => {
+                  setDays(d);
+                  setChartLoading(true);
+                }}
+                className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors ${
+                  days === d
+                    ? "bg-blue-600 text-white"
+                    : "bg-slate-700 text-slate-400 hover:text-white"
+                }`}
+              >
+                {d === 1 ? "1D" : d === 7 ? "7D" : "30D"}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {chartLoading ? (
+          <div className="flex justify-center h-[250px] items-center">
+            <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin" />
+          </div>
+        ) : (
+          <ResponsiveContainer width="100%" height={250}>
+            <LineChart data={chartData}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
+              <XAxis dataKey="date" tick={{ fill: "#94a3b8", fontSize: 11 }} />
+              <YAxis tick={{ fill: "#94a3b8", fontSize: 11 }} />
+              <Tooltip
+                contentStyle={{
+                  backgroundColor: "#1e293b",
+                  border: "none",
+                  borderRadius: "8px",
+                }}
+                labelStyle={{ color: "#94a3b8" }}
+                itemStyle={{ color: "#60a5fa" }}
+              />
+              <Line
+                type="monotone"
+                dataKey="price"
+                stroke="#60a5fa"
+                strokeWidth={2}
+                dot={false}
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        )}
       </div>
 
       {/* Description */}
       {coin.description.en && (
-        <div className="bg-slate-800 border border-slate-700 rounded-xl p-6">
+        <div className="bg-slate-800 border border-slate-700 rounded-xl p-6 mb-6">
           <h2 className="text-white font-semibold mb-3">About {coin.name}</h2>
           <p
             className="text-slate-400 text-sm leading-relaxed line-clamp-6"
@@ -176,6 +211,52 @@ function CoinDetailPage() {
           />
         </div>
       )}
+
+      {/* Portfolio */}
+      <div className="bg-slate-800 border border-slate-700 rounded-xl p-6">
+        <h2 className="text-white font-semibold mb-3">Add to Portfolio</h2>
+        {showPortfolioInput ? (
+          <div className="flex gap-3">
+            <input
+              type="number"
+              placeholder="Amount"
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
+              className="flex-1 bg-slate-700 border border-slate-600 rounded-lg px-4 py-2 text-white text-sm outline-none focus:border-blue-500"
+            />
+            <button
+              onClick={() => {
+                if (!amount || !coin) return;
+                addToPortfolio({
+                  id: coin.id,
+                  name: coin.name,
+                  symbol: coin.symbol,
+                  amount: parseFloat(amount),
+                  image: coin.image.large,
+                });
+                setAmount("");
+                setShowPortfolioInput(false);
+              }}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm transition-colors"
+            >
+              Add
+            </button>
+            <button
+              onClick={() => setShowPortfolioInput(false)}
+              className="text-slate-400 hover:text-white px-3 py-2 text-sm transition-colors"
+            >
+              Cancel
+            </button>
+          </div>
+        ) : (
+          <button
+            onClick={() => setShowPortfolioInput(true)}
+            className="bg-slate-700 hover:bg-slate-600 text-white px-4 py-2 rounded-lg text-sm transition-colors"
+          >
+            + Add {coin.name}
+          </button>
+        )}
+      </div>
     </div>
   );
 }

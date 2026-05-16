@@ -7,6 +7,7 @@ export type Coin = {
   price_change_percentage_24h: number;
   market_cap: number;
   market_cap_rank: number;
+  total_volume: number;
 };
 
 export type CoinDetail = {

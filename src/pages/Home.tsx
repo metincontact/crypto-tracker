@@ -2,14 +2,18 @@ import { useState, useEffect } from "react";
 import type { Coin } from "../types";
 import CoinCard from "../components/CoinCard";
 import SearchBar from "../components/SearchBar";
+import Portfolio from "../components/Portfolio";
 import { useFavorites } from "../useFavorites";
+import { usePortfolio } from "../usePortfolio";
 
 function Home() {
   const [coins, setCoins] = useState<Coin[]>([]);
   const [search, setSearch] = useState("");
+  const [sortBy, setSortBy] = useState("market_cap");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const { favorites } = useFavorites();
+  const { portfolio, removeFromPortfolio } = usePortfolio();
 
   useEffect(() => {
     const API_KEY = import.meta.env.VITE_COINGECKO_API_KEY;
@@ -31,11 +35,24 @@ function Home() {
     fetchCoins();
   }, []);
 
-  const filteredCoins = coins.filter(
-    (coin) =>
-      coin.name.toLowerCase().includes(search.toLowerCase()) ||
-      coin.symbol.toLowerCase().includes(search.toLowerCase()),
-  );
+  const prices: Record<string, number> = {};
+  coins.forEach((c) => {
+    prices[c.id] = c.current_price;
+  });
+
+  const filteredCoins = coins
+    .filter(
+      (coin) =>
+        coin.name.toLowerCase().includes(search.toLowerCase()) ||
+        coin.symbol.toLowerCase().includes(search.toLowerCase()),
+    )
+    .sort((a, b) => {
+      if (sortBy === "price_asc") return a.current_price - b.current_price;
+      if (sortBy === "price_desc") return b.current_price - a.current_price;
+      if (sortBy === "volume_desc") return b.total_volume - a.total_volume;
+      if (sortBy === "volume_asc") return a.total_volume - b.total_volume;
+      return b.market_cap - a.market_cap;
+    });
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-10">
@@ -44,10 +61,40 @@ function Home() {
         <p className="text-slate-400">Top 50 cryptocurrencies by market cap</p>
       </div>
 
-      <div className="mb-6">
+      {/* Portfolio */}
+      <Portfolio
+        portfolio={portfolio}
+        prices={prices}
+        onRemove={removeFromPortfolio}
+      />
+
+      <div className="mt-8 mb-6">
         <SearchBar value={search} onChange={setSearch} />
       </div>
 
+      <div className="flex gap-2 flex-wrap mb-6">
+        {[
+          { label: "Market Cap", value: "market_cap" },
+          { label: "Price ↑", value: "price_asc" },
+          { label: "Price ↓", value: "price_desc" },
+          { label: "Volume ↑", value: "volume_asc" },
+          { label: "Volume ↓", value: "volume_desc" },
+        ].map((option) => (
+          <button
+            key={option.value}
+            onClick={() => setSortBy(option.value)}
+            className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
+              sortBy === option.value
+                ? "bg-blue-600 text-white"
+                : "bg-slate-800 text-slate-400 hover:text-white border border-slate-700"
+            }`}
+          >
+            {option.label}
+          </button>
+        ))}
+      </div>
+
+      {/* Favorites */}
       {favorites.length > 0 && (
         <div className="mb-6">
           <h2 className="text-slate-400 text-sm font-semibold uppercase tracking-wider mb-3">
