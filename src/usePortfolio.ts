@@ -1,23 +1,22 @@
 import { useState } from "react";
+import type { PortfolioItem } from "./types";
 
-export type PortfolioItem = {
-  id: string;
-  name: string;
-  symbol: string;
-  amount: number;
-  image: string;
-};
+function loadPortfolio(): PortfolioItem[] {
+  try {
+    const saved = localStorage.getItem("portfolio");
+    return saved ? (JSON.parse(saved) as PortfolioItem[]) : [];
+  } catch {
+    return [];
+  }
+}
 
 export function usePortfolio() {
-  const [portfolio, setPortfolio] = useState<PortfolioItem[]>(() => {
-    const saved = localStorage.getItem("portfolio");
-    return saved ? JSON.parse(saved) : [];
-  });
+  const [portfolio, setPortfolio] = useState<PortfolioItem[]>(loadPortfolio);
 
   const addToPortfolio = (item: PortfolioItem) => {
     setPortfolio((prev) => {
       const exists = prev.find((p) => p.id === item.id);
-      let updated;
+      let updated: PortfolioItem[];
       if (exists) {
         updated = prev.map((p) =>
           p.id === item.id ? { ...p, amount: p.amount + item.amount } : p,

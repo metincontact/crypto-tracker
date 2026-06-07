@@ -1,10 +1,16 @@
 import { useState } from "react";
 
-export function useFavorites() {
-  const [favorites, setFavorites] = useState<string[]>(() => {
+function loadFavorites(): string[] {
+  try {
     const saved = localStorage.getItem("favorites");
-    return saved ? JSON.parse(saved) : [];
-  });
+    return saved ? (JSON.parse(saved) as string[]) : [];
+  } catch {
+    return [];
+  }
+}
+
+export function useFavorites() {
+  const [favorites, setFavorites] = useState<string[]>(loadFavorites);
 
   const toggleFavorite = (id: string) => {
     setFavorites((prev) => {

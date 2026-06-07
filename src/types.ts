@@ -4,7 +4,7 @@ export type Coin = {
   name: string;
   image: string;
   current_price: number;
-  price_change_percentage_24h: number;
+  price_change_percentage_24h: number | null;
   market_cap: number;
   market_cap_rank: number;
   total_volume: number;
@@ -36,4 +36,12 @@ export type CoinDetail = {
 
 export type ChartData = {
   prices: [number, number][];
+};
+
+export type PortfolioItem = {
+  id: string;
+  name: string;
+  symbol: string;
+  amount: number;
+  image: string;
 };

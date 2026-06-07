@@ -1,7 +1,8 @@
 @import "tailwindcss";
 
 body {
-  background-color: #0f172a;
+  background-color: #070d1a;
+  background-image: radial-gradient(ellipse 90% 40% at 50% 0%, rgba(30, 64, 175, 0.14), transparent);
   min-height: 100vh;
   color: white;
 }
