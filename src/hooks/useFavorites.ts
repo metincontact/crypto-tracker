@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 function loadFavorites(): string[] {
   try {
@@ -11,6 +11,14 @@ function loadFavorites(): string[] {
 
 export function useFavorites() {
   const [favorites, setFavorites] = useState<string[]>(loadFavorites);
+
+  useEffect(() => {
+    const onStorage = (e: StorageEvent) => {
+      if (e.key === "favorites") setFavorites(loadFavorites());
+    };
+    window.addEventListener("storage", onStorage);
+    return () => window.removeEventListener("storage", onStorage);
+  }, []);
 
   const toggleFavorite = (id: string) => {
     setFavorites((prev) => {

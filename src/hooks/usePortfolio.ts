@@ -1,5 +1,5 @@
-import { useState } from "react";
-import type { PortfolioItem } from "./types";
+import { useState, useEffect } from "react";
+import type { PortfolioItem } from "../types";
 
 function loadPortfolio(): PortfolioItem[] {
   try {
@@ -12,6 +12,14 @@ function loadPortfolio(): PortfolioItem[] {
 
 export function usePortfolio() {
   const [portfolio, setPortfolio] = useState<PortfolioItem[]>(loadPortfolio);
+
+  useEffect(() => {
+    const onStorage = (e: StorageEvent) => {
+      if (e.key === "portfolio") setPortfolio(loadPortfolio());
+    };
+    window.addEventListener("storage", onStorage);
+    return () => window.removeEventListener("storage", onStorage);
+  }, []);
 
   const addToPortfolio = (item: PortfolioItem) => {
     setPortfolio((prev) => {

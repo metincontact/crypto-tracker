@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import type { Coin } from "../types";
 
 type CoinCardProps = {
@@ -6,14 +6,13 @@ type CoinCardProps = {
 };
 
 function CoinCard({ coin }: CoinCardProps) {
-  const navigate = useNavigate();
   const change = coin.price_change_percentage_24h ?? 0;
   const isPositive = change >= 0;
 
   return (
-    <div
-      onClick={() => navigate(`/coin/${coin.id}`)}
-      className="group relative bg-[#0b1628] border border-[#1a2840] rounded-xl p-4 flex items-center gap-4 hover:border-[#2a3f5f] hover:bg-[#0d1e38] transition-all duration-200 cursor-pointer overflow-hidden"
+    <Link
+      to={`/coin/${coin.id}`}
+      className="group relative bg-[#0b1628] border border-[#1a2840] rounded-xl p-4 flex items-center gap-4 hover:border-[#2a3f5f] hover:bg-[#0d1e38] transition-all duration-200 overflow-hidden"
     >
       <div
         className={`absolute inset-y-0 left-0 w-[3px] transition-opacity duration-200 group-hover:opacity-100 opacity-60 ${isPositive ? "bg-emerald-500" : "bg-red-500"}`}
@@ -51,7 +50,7 @@ function CoinCard({ coin }: CoinCardProps) {
           {isPositive ? "▲" : "▼"} {Math.abs(change).toFixed(2)}%
         </span>
       </div>
-    </div>
+    </Link>
   );
 }
 

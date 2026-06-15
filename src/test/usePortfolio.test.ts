@@ -1,5 +1,5 @@
 import { renderHook, act } from "@testing-library/react";
-import { usePortfolio } from "../usePortfolio";
+import { usePortfolio } from "../hooks/usePortfolio";
 import type { PortfolioItem } from "../types";
 
 const btc: PortfolioItem = {

@@ -1,5 +1,5 @@
 import { renderHook, act } from "@testing-library/react";
-import { useFavorites } from "../useFavorites";
+import { useFavorites } from "../hooks/useFavorites";
 
 beforeEach(() => {
   localStorage.clear();
