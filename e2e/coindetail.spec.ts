@@ -30,7 +30,7 @@ test.beforeEach(async ({ page }) => {
 
 test("displays coin name and price", async ({ page }) => {
   await page.goto("/coin/bitcoin");
-  await expect(page.getByText("Bitcoin")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Bitcoin", exact: true })).toBeVisible();
   await expect(page.getByText("$50,000")).toBeVisible();
 });
 
