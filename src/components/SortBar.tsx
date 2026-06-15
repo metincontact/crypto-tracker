@@ -13,7 +13,7 @@ type SortBarProps = {
 
 export default function SortBar({ sortBy, onChange }: SortBarProps) {
   return (
-    <div className="flex gap-1.5 flex-wrap">
+    <div className="flex gap-1.5 overflow-x-auto [&::-webkit-scrollbar]:hidden [scrollbar-width:none]">
       {SORT_OPTIONS.map((option) => (
         <button
           key={option.value}

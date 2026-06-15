@@ -104,19 +104,22 @@ function CoinDetailPage() {
       </div>
 
       <div className="grid grid-cols-3 gap-3 mb-6">
-        <div className="bg-[#0b1628] border border-[#1a2840] rounded-xl p-4">
+        <div className="bg-[#0b1628] border border-[#1e3355] rounded-xl p-4 relative overflow-hidden">
+          <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-blue-500/60 to-transparent" />
           <p className="text-slate-500 text-xs mb-2">Price</p>
           <p className="text-white font-bold text-lg leading-tight">
             ${coin.market_data.current_price.usd.toLocaleString()}
           </p>
         </div>
-        <div className="bg-[#0b1628] border border-[#1a2840] rounded-xl p-4">
+        <div className={`bg-[#0b1628] border rounded-xl p-4 relative overflow-hidden ${isPositive ? "border-emerald-900/60" : "border-red-900/60"}`}>
+          <div className={`absolute top-0 left-0 right-0 h-[2px] ${isPositive ? "bg-gradient-to-r from-emerald-500/60 to-transparent" : "bg-gradient-to-r from-red-500/60 to-transparent"}`} />
           <p className="text-slate-500 text-xs mb-2">24h Change</p>
           <p className={`font-bold text-lg leading-tight ${isPositive ? "text-emerald-400" : "text-red-400"}`}>
             {isPositive ? "+" : ""}{coin.market_data.price_change_percentage_24h.toFixed(2)}%
           </p>
         </div>
-        <div className="bg-[#0b1628] border border-[#1a2840] rounded-xl p-4">
+        <div className="bg-[#0b1628] border border-[#1e3355] rounded-xl p-4 relative overflow-hidden">
+          <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-blue-500/60 to-transparent" />
           <p className="text-slate-500 text-xs mb-2">Market Cap</p>
           <p className="text-white font-bold text-lg leading-tight">
             ${(coin.market_data.market_cap.usd / 1e9).toFixed(2)}B

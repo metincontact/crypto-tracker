@@ -52,10 +52,11 @@ function Home() {
   return (
     <div className="max-w-3xl mx-auto px-4 py-12">
       <div className="mb-10">
-        <h1 className="text-4xl font-bold mb-2">
+        <h1 className="text-5xl font-bold mb-3 tracking-tight">
           <span className="bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">
-            Crypto Tracker
+            Crypto
           </span>
+          <span className="text-blue-500"> Tracker</span>
         </h1>
         <p className="text-slate-500 text-sm">
           Top {coins.length > 50 ? coins.length : 50} cryptocurrencies by market cap
@@ -64,7 +65,7 @@ function Home() {
 
       <Portfolio portfolio={portfolio} prices={prices} onRemove={removeFromPortfolio} />
 
-      <div className={`flex flex-col sm:flex-row sm:items-center gap-4 ${portfolio.length > 0 ? "mt-8" : ""} mb-5`}>
+      <div className={`flex flex-col gap-3 ${portfolio.length > 0 ? "mt-8" : ""} mb-5`}>
         <SearchBar value={search} onChange={setSearch} />
         <SortBar sortBy={sortBy} onChange={setSortBy} />
       </div>

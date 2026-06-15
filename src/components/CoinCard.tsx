@@ -18,8 +18,8 @@ function CoinCard({ coin }: CoinCardProps) {
         className={`absolute inset-y-0 left-0 w-[3px] transition-opacity duration-200 group-hover:opacity-100 opacity-60 ${isPositive ? "bg-emerald-500" : "bg-red-500"}`}
       />
 
-      <span className="text-slate-600 text-xs w-6 text-center shrink-0">
-        {coin.market_cap_rank}
+      <span className="text-slate-500 text-xs w-6 text-center shrink-0 font-mono">
+        #{coin.market_cap_rank}
       </span>
 
       <img src={coin.image} alt={coin.name} className="w-8 h-8 rounded-full shrink-0" />
@@ -30,10 +30,10 @@ function CoinCard({ coin }: CoinCardProps) {
       </div>
 
       <div className="hidden md:block text-right shrink-0">
-        <p className="text-slate-500 text-xs mb-0.5">Market Cap</p>
-        <p className="text-slate-400 text-xs font-medium">
+        <p className="text-slate-500 text-xs font-medium">
           ${(coin.market_cap / 1e9).toFixed(2)}B
         </p>
+        <p className="text-slate-700 text-xs">mkt cap</p>
       </div>
 
       <div className="text-right shrink-0">

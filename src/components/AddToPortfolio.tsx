@@ -47,12 +47,12 @@ export default function AddToPortfolio({ coin, holding, onAdd }: AddToPortfolioP
       ) : (
         <button
           onClick={() => setOpen(true)}
-          className="flex items-center gap-2 bg-[#0d1e38] hover:bg-[#122540] border border-[#1a2840] hover:border-[#2a3f5f] text-white px-4 py-2.5 rounded-xl text-sm font-medium transition-all"
+          className="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white px-4 py-3 rounded-xl text-sm font-semibold transition-all shadow-lg shadow-blue-900/30"
         >
-          <svg className="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
           </svg>
-          Add {coin.name}
+          Add {coin.name} to Portfolio
         </button>
       )}
       {holding !== undefined && holding > 0 && (
