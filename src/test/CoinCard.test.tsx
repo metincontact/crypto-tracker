@@ -30,7 +30,7 @@ test("renders coin name and symbol", () => {
 
 test("renders market cap rank", () => {
   renderCard();
-  expect(screen.getByText("1")).toBeInTheDocument();
+  expect(screen.getByText("#1")).toBeInTheDocument();
 });
 
 test("renders formatted price", () => {

@@ -66,5 +66,5 @@ test("shows retry button and retries on click", async () => {
 test("renders page heading", async () => {
   vi.mocked(api.fetchCoins).mockResolvedValue(mockCoins);
   renderHome();
-  expect(screen.getByText("Crypto Tracker")).toBeInTheDocument();
+  expect(screen.getByRole("heading", { level: 1 })).toBeInTheDocument();
 });
